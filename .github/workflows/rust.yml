@@ -26,3 +26,11 @@ jobs:
         run: cargo run --example test
       - name: Test Shared object
         run: cd dll_test_crate && cargo build && cargo run --example test
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Binary
+        run: cargo run --example test
+      - name: Test Shared object
+        run: cd dll_test_crate && cargo build && cargo run --example test
