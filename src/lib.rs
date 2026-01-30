@@ -15,8 +15,8 @@
 
 mod platform_impl;
 
-use std::fmt::{Display, Formatter};
 use platform_impl::platform;
+use std::fmt::{Display, Formatter};
 
 #[derive(Debug, Default, Eq, PartialEq, Hash, Clone, Copy, Ord, PartialOrd)]
 pub enum IsMainThread {

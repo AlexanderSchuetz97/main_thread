@@ -1,5 +1,5 @@
-use objc_rs::*;
+use objc2_foundation::NSThread;
 
 pub fn is_main_thread() -> Option<bool> {
-    unsafe { Some(msg_send![class!(NSThread), isMainThread]) }
+    Some(NSThread::currentThread().isMainThread())
 }

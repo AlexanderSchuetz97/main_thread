@@ -1,7 +1,7 @@
+use defer_heavy::defer;
 use std::sync::atomic::AtomicU64;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::Mutex;
-use defer_heavy::defer;
 use winapi::shared::minwindef::{DWORD, FILETIME};
 use winapi::um::processthreadsapi;
 use winapi::um::processthreadsapi::{GetCurrentProcessId, GetThreadTimes, OpenThread};
@@ -21,7 +21,6 @@ pub fn is_main_thread() -> Option<bool> {
     }
 
     Some(current_thread_id == main_thread_id)
-
 }
 
 static MUTEX: Mutex<()> = Mutex::new(());
@@ -42,7 +41,10 @@ fn tlhelp32_main_thread_id() -> DWORD {
 
     unsafe {
         let current_proc = GetCurrentProcessId();
-        let snapshot = winapi::um::tlhelp32::CreateToolhelp32Snapshot(winapi::um::tlhelp32::TH32CS_SNAPTHREAD, current_proc);
+        let snapshot = winapi::um::tlhelp32::CreateToolhelp32Snapshot(
+            winapi::um::tlhelp32::TH32CS_SNAPTHREAD,
+            current_proc,
+        );
         if snapshot == winapi::um::handleapi::INVALID_HANDLE_VALUE {
             TL_MAIN_THREAD_ID.store(0, SeqCst);
             return 0;
@@ -51,7 +53,6 @@ fn tlhelp32_main_thread_id() -> DWORD {
         defer! {
             winapi::um::handleapi::CloseHandle(snapshot);
         }
-
 
         let mut entry = THREADENTRY32 {
             dwSize: std::mem::size_of::<THREADENTRY32>() as _,
@@ -75,7 +76,9 @@ fn tlhelp32_main_thread_id() -> DWORD {
                     return 0;
                 }
             } else if winapi::um::tlhelp32::Thread32Next(snapshot, &mut entry) == 0 {
-                if winapi::um::errhandlingapi::GetLastError() != winapi::shared::winerror::ERROR_NO_MORE_FILES {
+                if winapi::um::errhandlingapi::GetLastError()
+                    != winapi::shared::winerror::ERROR_NO_MORE_FILES
+                {
                     TL_MAIN_THREAD_ID.store(0, SeqCst);
                     return 0;
                 }
@@ -84,12 +87,15 @@ fn tlhelp32_main_thread_id() -> DWORD {
                 return main_thread_id as _;
             }
 
-
             if entry.th32OwnerProcessID != current_proc {
                 continue;
             }
 
-            let thread = OpenThread(winapi::um::winnt::THREAD_QUERY_INFORMATION, 1, entry.th32ThreadID);
+            let thread = OpenThread(
+                winapi::um::winnt::THREAD_QUERY_INFORMATION,
+                1,
+                entry.th32ThreadID,
+            );
             if thread == winapi::um::handleapi::INVALID_HANDLE_VALUE {
                 continue;
             }
@@ -108,11 +114,20 @@ fn tlhelp32_main_thread_id() -> DWORD {
                 dwHighDateTime: 0,
             };
 
-            if GetThreadTimes(thread, &mut creation_time, &mut dummy_time, &mut dummy_time, &mut dummy_time) == 0 {
+            if GetThreadTimes(
+                thread,
+                &mut creation_time,
+                &mut dummy_time,
+                &mut dummy_time,
+                &mut dummy_time,
+            ) == 0
+            {
                 continue;
             }
 
-            let inspected_thread_time = ((creation_time.dwHighDateTime as u128) << (std::mem::size_of::<DWORD>() * 8)) | (creation_time.dwLowDateTime as u128);
+            let inspected_thread_time = ((creation_time.dwHighDateTime as u128)
+                << (std::mem::size_of::<DWORD>() * 8))
+                | (creation_time.dwLowDateTime as u128);
 
             if inspected_thread_time < main_thread_time {
                 main_thread_time = inspected_thread_time;
