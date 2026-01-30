@@ -1,0 +1,24 @@
+[package]
+name = "main_thread"
+version = "0.1.0"
+authors = ["aschuetz@protonmail.com"]
+edition = "2021"
+keywords = ["thread", "main"]
+description = "One function cross platform library that returns true if the current thread is the main thread."
+license = "Apache-2.0"
+rust-version = "1.63.0"
+repository = "https://github.com/AlexanderSchuetz97/main_thread"
+categories = ["concurrency"]
+
+
+[dependencies]
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = {version = "^0.3.9", features = ["processthreadsapi", "minwindef", "tlhelp32", "handleapi", "winnt", "errhandlingapi", "winerror"]}
+defer-heavy = "0.1.0"
+
+[target.'cfg(any(target_os = "linux",target_os = "dragonfly",target_os = "freebsd",target_os = "netbsd",target_os = "openbsd"))'.dependencies]
+libc = "^0.2.180"
+
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+objc-rs = "^0.2.8"
