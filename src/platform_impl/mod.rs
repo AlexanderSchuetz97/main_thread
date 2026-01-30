@@ -25,7 +25,7 @@ pub mod platform;
 
 /// ios impl
 #[cfg(target_os = "ios")]
-#[path = "macos.rs"]
+#[path = "ios.rs"]
 pub mod platform;
 
 /// Android noop impl
