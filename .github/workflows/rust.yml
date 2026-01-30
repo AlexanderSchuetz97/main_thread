@@ -66,3 +66,25 @@ jobs:
             cd dll_test_crate
             cargo build
             cargo run --example test
+  freebsd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: test freebsd
+        uses: cross-platform-actions/action@v0.29.0
+        with:
+          memory: 1024M
+          operating_system: freebsd
+          version: '14.3'
+          run: |
+            uname -a
+            ls -lah
+            echo "SETUP RUST"
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            . "$HOME/.cargo/env"
+            echo "RUNNING BINARY TEST"
+            cargo run --example test
+            echo "RUNNING SHARED OBJECT TEST"
+            cd dll_test_crate
+            cargo build
+            cargo run --example test

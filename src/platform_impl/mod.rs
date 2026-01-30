@@ -2,14 +2,16 @@
 #[path = "windows.rs"]
 pub(crate) mod platform;
 
-#[cfg(any(
-    target_os = "linux",
-    target_os = "dragonfly",
-    target_os = "freebsd",
-    target_os = "netbsd",
-    target_os = "openbsd"
-))]
+#[cfg(target_os = "linux")]
 #[path = "linux.rs"]
+pub(crate) mod platform;
+
+#[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd"))]
+#[path = "bsd.rs"]
+pub(crate) mod platform;
+
+#[cfg(target_os = "netbsd")]
+#[path = "netbsd.rs"]
 pub(crate) mod platform;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

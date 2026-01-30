@@ -49,6 +49,7 @@ This crate is a fork of his work.
 * "is_main_thread" appears to no longer be maintained
 * "is_main_thread" does not compile for macOS targets using a modern rust compiler, fixing the compilation errors resulted in runtime panics (I am reasonably convinced that it never worked)
 * "is_main_thread" windows-specific implementation was wrong for all crates that had the crate-type "cdylib" and relied on undefined behavior for all other crate types.
+* "is_main_thread" netbsd-specific implementation does not work on newer versions of netbsd. (Possibly on no version that rust supports, it is based on outdated info from an ancient stackoverflow post.)
 
 This fork addresses all these issues.
 
