@@ -1,6 +1,6 @@
-//! `main_thread` is a single function crate that provides a function to check if the calling thread is the main thread.
+//! Cross-platform library to check if the current thread is the main thread.
 //!
-//! # Example
+//! ## Example
 //! ```rust
 //! use main_thread::IsMainThread;
 //!
