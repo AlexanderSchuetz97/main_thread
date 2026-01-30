@@ -33,8 +33,8 @@
 /// Platform-specific implementation
 mod platform_impl;
 
-use platform_impl::platform;
 use core::fmt::{Display, Formatter};
+use platform_impl::platform;
 
 #[derive(Debug, Default, Eq, PartialEq, Hash, Clone, Copy, Ord, PartialOrd)]
 pub enum IsMainThread {

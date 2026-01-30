@@ -9,7 +9,12 @@ pub mod platform;
 pub mod platform;
 
 /// BSD impl
-#[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "macos"))]
+#[cfg(any(
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "openbsd",
+    target_os = "macos"
+))]
 #[path = "bsd.rs"]
 pub mod platform;
 

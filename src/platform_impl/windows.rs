@@ -1,6 +1,6 @@
-use defer_heavy::defer;
 use core::sync::atomic::AtomicU64;
 use core::sync::atomic::Ordering::SeqCst;
+use defer_heavy::defer;
 use winapi::shared::minwindef::{DWORD, FILETIME};
 use winapi::um::processthreadsapi;
 use winapi::um::processthreadsapi::{GetCurrentProcessId, GetThreadTimes, OpenThread};
