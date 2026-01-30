@@ -12,4 +12,6 @@ fn main() {
     let is_main = std::thread::spawn(|| is_main_thread()).join().unwrap();
 
     assert_ne!(is_main, IsMainThread::MainThread);
+
+    println!("Test successful!");
 }

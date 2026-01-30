@@ -15,27 +15,37 @@ fn some_function() {
 ```
 
 ## Supported platforms
-| Platform      | Supported | Tested  |
-|---------------|-----------|---------|
-| Linux         | &check;   | &check; |
-| Windows       | &check;   | &check; |
-| macOS         | &check;   | &check; |
-| FreeBSD       | &check;   | &check; |
-| OpenBSD       | &check;   | &check; |
-| NetBSD        | &check;   | &check; |
-| Dragonfly BSD | &check;   | &cross; |
-| ios           | ?         | &cross; |
-| android       | &cross;   | &cross; |
-| wasm          | &cross;   | &cross; |
+| Platform        | Supported | CI-Tested |
+|-----------------|-----------|-----------|
+| Linux Gnu       | &check;   | &check;   |
+| Linux Musl      | &check;   | &cross;   |
+| Windows Msvc    | &check;   | &check;   |
+| Windows Gnu     | &check;   | &cross;   |
+| Windows on Wine | &check;   | &cross;   |
+| macOS           | &check;   | &check;   |
+| FreeBSD         | &check;   | &check;   |
+| OpenBSD         | &check;   | &check;   |
+| NetBSD          | &check;   | &check;   |
+| Dragonfly BSD   | ?         | &cross;   |
+| ios             | ?         | &cross;   |
+| android         | &cross;   | &cross;   |
+| wasm            | &cross;   | &cross;   |
+
+Supported '?' means that code exists that handles the platform. 
+It's guaranteed that the code compiles, but it has never been tested, not even manually.
 
 ### When is IsMainThread::Unknown returned exactly?
-For all unsupported platforms it is always returned.
+For all unsupported platforms IsMainThread::Unknown is always returned.
 
-The windows implementation will return unknown if the
+The Windows implementation will return unknown if the
 process does not have permission to use tlhelp32.dll library functions on itself
 and the C-Runtime did not execute the ".CRT$XCU" initializers.
 As of 2026 this is never the case, 
 but you never know what microsoft decides to do in the future.
+
+The FreeBSD, OpenBSD and Dragonfly BSD implementation will return
+IsMainThread::Unknown if the "the thread initialization has not completed" yet.
+Normal applications are unlikely to encounter this.
 
 On all other platforms IsMainThread::Unknown is never returned.
 

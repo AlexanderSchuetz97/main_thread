@@ -1,3 +1,5 @@
+/// most bsd's provide pthread_main_np, which is non-portable, but some do have it in common and
+/// its precisely what we need.
 pub fn is_main_thread() -> Option<bool> {
     use libc::pthread_main_np;
 

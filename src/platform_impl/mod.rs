@@ -1,31 +1,39 @@
+/// Windows impl
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
+/// Linux impl
 #[cfg(target_os = "linux")]
 #[path = "linux.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
-#[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd"))]
+/// BSD impl
+#[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "macos"))]
 #[path = "bsd.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
+/// Netbsd impl
 #[cfg(target_os = "netbsd")]
 #[path = "netbsd.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
+/// ios impl
+#[cfg(target_os = "ios")]
 #[path = "macos.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
+/// Android noop impl
 #[cfg(target_os = "android")]
 #[path = "android.rs"]
-pub(crate) mod platform;
+pub mod platform;
 
+/// wasm32 noop impl
 #[cfg(target_arch = "wasm32")]
-#[path = "web.rs"]
-pub(crate) mod platform;
+#[path = "wasm.rs"]
+pub mod platform;
 
+/// Everything else
 #[cfg(all(
     not(target_os = "ios"),
     not(target_os = "windows"),
@@ -38,7 +46,7 @@ pub(crate) mod platform;
     not(target_os = "openbsd"),
     not(target_arch = "wasm32"),
 ))]
-pub(crate) mod platform {
+pub mod platform {
     pub fn is_main_thread() -> Option<bool> {
         None
     }

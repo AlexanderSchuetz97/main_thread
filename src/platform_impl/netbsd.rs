@@ -1,3 +1,4 @@
+/// Netbsd specific implementation using their lwp thread util.
 pub fn is_main_thread() -> Option<bool> {
     unsafe {
         let self_id = libc::_lwp_self();

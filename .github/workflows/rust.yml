@@ -10,6 +10,48 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: cargo fmt
+        run: cargo fmt --check
+  clippy-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: clippy
+        run: cargo clippy -- --deny warnings
+  clippy-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: clippy
+        run: cargo clippy -- --deny warnings
+  linux-no-std:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add nightly toolchain
+        run: rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
+      - name: no-std build
+        run: cargo clean && cargo +nightly -Zbuild-std=core build
+  windows-no-std:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add nightly toolchain
+        run: rustup component add rust-src --toolchain nightly-x86_64-pc-windows-msvc
+      - name: no-std build
+        run: cargo clean && cargo +nightly -Zbuild-std=core build
+  macos-no-std:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add nightly toolchain
+        run: rustup component add rust-src --toolchain nightly-x86_64-apple-darwin
+      - name: no-std build
+        run: cargo clean && cargo +nightly -Zbuild-std=core build
   linux:
     runs-on: ubuntu-latest
     steps:

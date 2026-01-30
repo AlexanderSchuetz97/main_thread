@@ -15,6 +15,8 @@ pub fn main() {
         }).join().unwrap();
         assert_eq!(2, x2);
     }
+
+    println!("Test successful!");
 }
 
 #[cfg(target_vendor = "apple")]
@@ -32,6 +34,8 @@ pub fn main() {
         }).join().unwrap();
         assert_eq!(2, x2);
     }
+
+    println!("Test successful!");
 }
 
 #[cfg(target_os = "windows")]
@@ -59,4 +63,6 @@ pub fn main() {
         }).join().unwrap();
         assert_eq!(2, x2);
     }
+
+    println!("Test successful!");
 }

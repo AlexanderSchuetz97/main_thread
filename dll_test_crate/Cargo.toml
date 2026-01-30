@@ -8,7 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 main_thread = {path = ".."}
-#is_main_thread = "0.1.0"
 
 [dev-dependencies]
-libloading = "=0.8.9"# Do not update
+libloading = "=0.8.9"# Do not update, the latest version doesn't work on GitHub action's openbsd yet because their rustc is too old.
+

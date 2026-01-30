@@ -1,12 +1,12 @@
 use defer_heavy::defer;
-use std::sync::atomic::AtomicU64;
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::Mutex;
+use core::sync::atomic::AtomicU64;
+use core::sync::atomic::Ordering::SeqCst;
 use winapi::shared::minwindef::{DWORD, FILETIME};
 use winapi::um::processthreadsapi;
 use winapi::um::processthreadsapi::{GetCurrentProcessId, GetThreadTimes, OpenThread};
 use winapi::um::tlhelp32::THREADENTRY32;
 
+/// windows specific impl first try to look up using tlhelp32 and if that fails, fallback to crt-xcu
 pub fn is_main_thread() -> Option<bool> {
     let current_thread_id = unsafe { processthreadsapi::GetCurrentThreadId() };
     let mut main_thread_id = tlhelp32_main_thread_id();
@@ -23,16 +23,16 @@ pub fn is_main_thread() -> Option<bool> {
     Some(current_thread_id == main_thread_id)
 }
 
-static MUTEX: Mutex<()> = Mutex::new(());
-
+/// Implementation that gets the main thread from the current process using
+/// the tlhelp32.h/dll
+#[allow(clippy::cast_possible_truncation)]
+#[allow(clippy::cast_lossless)]
 fn tlhelp32_main_thread_id() -> DWORD {
     static TL_MAIN_THREAD_ID: AtomicU64 = AtomicU64::new(u64::MAX);
     let value = TL_MAIN_THREAD_ID.load(SeqCst);
     if value != u64::MAX {
         return value as _;
     }
-
-    let _guard = MUTEX.lock();
 
     let value = TL_MAIN_THREAD_ID.load(SeqCst);
     if value != u64::MAX {
@@ -55,7 +55,7 @@ fn tlhelp32_main_thread_id() -> DWORD {
         }
 
         let mut entry = THREADENTRY32 {
-            dwSize: std::mem::size_of::<THREADENTRY32>() as _,
+            dwSize: core::mem::size_of::<THREADENTRY32>() as _,
             cntUsage: 0,
             th32ThreadID: 0,
             th32OwnerProcessID: 0,
@@ -126,7 +126,7 @@ fn tlhelp32_main_thread_id() -> DWORD {
             }
 
             let inspected_thread_time = ((creation_time.dwHighDateTime as u128)
-                << (std::mem::size_of::<DWORD>() * 8))
+                << (core::mem::size_of::<DWORD>() * 8))
                 | (creation_time.dwLowDateTime as u128);
 
             if inspected_thread_time < main_thread_time {
@@ -138,11 +138,13 @@ fn tlhelp32_main_thread_id() -> DWORD {
 }
 
 /// This is only the fallback code path, because this function MIGHT NOT WORK PROPERLY
-/// if the rust code is compiled into a cdylib that is loaded by LoadLibraryA.
-/// Because the XCU hook is invoked by which ever thread called LoadLibraryA.
+/// if the rust code is compiled into a cdylib that is loaded by `LoadLibraryA`.
+/// Because the XCU hook is invoked by whichever thread called `LoadLibraryA`.
 /// This might not be the main thread!
 ///
 /// This is still better than nothing in case tlhelp32 is not available.
+#[allow(clippy::cast_possible_truncation)]
+#[allow(clippy::cast_lossless)]
 fn xcu_main_thread_id() -> DWORD {
     static XCU_MAIN_THREAD_ID: AtomicU64 = AtomicU64::new(0);
     #[used]
