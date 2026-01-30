@@ -1,4 +1,4 @@
-fn is_main_thread() -> Option<bool> {
+pub fn is_main_thread() -> Option<bool> {
     use libc::pthread_main_np;
 
     //OpenBSD manpage:
