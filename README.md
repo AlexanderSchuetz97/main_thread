@@ -24,7 +24,7 @@ fn some_function() {
 | OpenBSD       | &check;   | &check; |
 | NetBSD        | &check;   | &check; |
 | Dragonfly BSD | &check;   | &cross; |
-| ios           | &check;   | &cross; |
+| ios           | ?         | &cross; |
 | android       | &cross;   | &cross; |
 | wasm          | &cross;   | &cross; |
 
@@ -47,8 +47,8 @@ This crate is a fork of his work.
 ### Reasons for forking
 * "Matthew" provided no way of contacting him
 * "is_main_thread" appears to no longer be maintained
-* "is_main_thread" does not compile for macOS targets using a modern rust compiler since it is missing "unsafe" statements in the osx specific implementation.
-* "is_main_thread" windows specific implementation was wrong for all crates that had the crate-type "cdylib" and relied on undefined behavior for all other crate types.
+* "is_main_thread" does not compile for macOS targets using a modern rust compiler, fixing the compilation errors resulted in runtime panics (I am reasonably convinced that it never worked)
+* "is_main_thread" windows-specific implementation was wrong for all crates that had the crate-type "cdylib" and relied on undefined behavior for all other crate types.
 
 This fork addresses all these issues.
 

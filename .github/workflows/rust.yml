@@ -26,6 +26,14 @@ jobs:
         run: cargo run --example test
       - name: Test Shared object
         run: cd dll_test_crate && cargo build && cargo run --example test
+  windows-arm:
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Binary
+        run: cargo run --example test
+      - name: Test Shared object
+        run: cd dll_test_crate && cargo build && cargo run --example test
   macos:
     runs-on: macos-latest
     steps:
@@ -34,3 +42,27 @@ jobs:
         run: cargo run --example test
       - name: Test Shared object
         run: cd dll_test_crate && cargo build && cargo run --example test
+  netbsd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: test netbsd
+        uses: cross-platform-actions/action@v0.29.0
+        with:
+          memory: 1024M
+          operating_system: netbsd
+          version: '10.1'
+          run: |
+            uname -a
+            ls -lah
+            echo "INSTALLING CURL"
+            sudo pkgin -y install curl
+            echo "SETUP RUST"
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            . "$HOME/.cargo/env"
+            echo "RUNNING BINARY TEST"
+            cargo run --example test
+            echo "RUNNING SHARED OBJECT TEST"
+            cd dll_test_crate
+            cargo build
+            cargo run --example test
