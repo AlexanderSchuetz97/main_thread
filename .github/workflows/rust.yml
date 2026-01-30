@@ -102,7 +102,7 @@ jobs:
             uname -a
             ls -lah
             echo "SETUP RUST"
-            pkg_add rust
+            sudo pkg_add rust
             echo "RUNNING BINARY TEST"
             cargo run --example test
             echo "RUNNING SHARED OBJECT TEST"
