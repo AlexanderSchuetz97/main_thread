@@ -5,7 +5,7 @@ pub fn main() {
     unsafe {
         let lib = thread::spawn(|| {libloading::Library::new("target/debug/libdll_test_crate.so").unwrap()}).join().unwrap();
 
-        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread").unwrap().try_as_raw_ptr().unwrap() as usize;
+        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread\0".as_bytes()).unwrap().try_as_raw_ptr().unwrap() as usize;
         std::mem::forget(lib);
 
         assert_eq!(1, std::mem::transmute::<usize, extern "C" fn() -> u32>(symbol)());
@@ -22,7 +22,7 @@ pub fn main() {
     unsafe {
         let lib = thread::spawn(|| {libloading::Library::new("target/debug/libdll_test_crate.dylib").unwrap()}).join().unwrap();
 
-        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread").unwrap().try_as_raw_ptr().unwrap() as usize;
+        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread\0".as_bytes()).unwrap().try_as_raw_ptr().unwrap() as usize;
         std::mem::forget(lib);
 
         assert_eq!(1, std::mem::transmute::<usize, extern "C" fn() -> u32>(symbol)());
@@ -49,7 +49,7 @@ pub fn main() {
             }).join().unwrap()
         };
 
-        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread").unwrap().try_as_raw_ptr().unwrap() as usize;
+        let symbol = lib.get::<extern "C" fn() -> u32>("is_this_the_main_thread\0".as_bytes()).unwrap().try_as_raw_ptr().unwrap() as usize;
         std::mem::forget(lib);
 
         assert_eq!(1, std::mem::transmute::<usize, extern "C" fn() -> u32>(symbol)());
