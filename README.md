@@ -15,30 +15,41 @@ fn some_function() {
 ```
 
 ## Supported platforms
-| Platform        | Supported | CI-Tested |
-|-----------------|-----------|-----------|
-| Linux Gnu       | &check;   | &check;   |
-| Linux Musl      | &check;   | &cross;   |
-| Windows Msvc    | &check;   | &check;   |
-| Windows Gnu     | &check;   | &cross;   |
-| Windows on Wine | &check;   | &cross;   |
-| macOS           | &check;   | &check;   |
-| FreeBSD         | &check;   | &check;   |
-| OpenBSD         | &check;   | &check;   |
-| NetBSD          | &check;   | &check;   |
-| Dragonfly BSD   | ?         | &cross;   |
-| ios             | ?         | &cross;   |
-| android         | &cross;   | &cross;   |
-| wasm            | &cross;   | &cross;   |
+| Platform        | Supported | CI-Tested | no-std  |
+|-----------------|-----------|-----------|---------|
+| Linux Gnu       | &check;   | &check;   | &check; |
+| Linux Musl      | &check;   | &cross;   | &check; |
+| Windows Msvc    | &check;   | &check;   | &check; |
+| Windows Gnu     | &check;   | &cross;   | &check; |
+| Windows on Wine | &check;   | &cross;   |         |
+| macOS           | &check;   | &check;   | &check; |
+| FreeBSD         | &check;   | &check;   | &check; |
+| OpenBSD         | &check;   | &check;   | &check; |
+| NetBSD          | &check;   | &check;   | &check; |
+| Dragonfly BSD   | ?         | &cross;   | &check; |
+| ios             | ?         | &cross;   | &cross; |
+| android         | &cross;   | &cross;   |         |
+| wasm            | &cross;   | &cross;   |         |
 
 Supported '?' means that code exists that handles the platform. 
 It's guaranteed that the code compiles, but it has never been tested, not even manually.
+
+### Gnu C library version (only linux gnu targets)
+| Arch       | Version |
+|------------|---------|
+| x86_64     | 2.17    |
+| i686       | 2.17    |
+| i586       | 2.17    |
+| all others | 2.30    |
+
+If you require this for older versions of the gnu c library than 2.30, 
+for different architectures then open a GitHub issue.
 
 ### When is IsMainThread::Unknown returned exactly?
 For all unsupported platforms IsMainThread::Unknown is always returned.
 
 The Windows implementation will return unknown if the
-process does not have permission to use tlhelp32.dll library functions on itself
+process does not have permission to use tlhelp32.h library functions on itself
 and the C-Runtime did not execute the ".CRT$XCU" initializers.
 As of 2026 this is never the case, 
 but you never know what microsoft decides to do in the future.
