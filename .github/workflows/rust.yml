@@ -61,7 +61,7 @@ jobs:
       - name: Test Shared object
         run: cd dll_test_crate && cargo build && cargo run --example test
   linux-aarch64:
-    runs-on: ubuntu-24-04-arm
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - name: Test Binary
