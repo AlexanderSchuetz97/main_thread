@@ -5,10 +5,7 @@ pub fn is_main_thread() -> Option<bool> {
 }
 
 /// actual impl for `x86_64`
-#[cfg(all(
-    target_env = "gnu",
-    target_arch = "x86_64"
-))]
+#[cfg(all(target_env = "gnu", target_arch = "x86_64"))]
 #[inline]
 fn is_mt() -> bool {
     // gettid requires gnu c library version 2.30. This is not ideal.
@@ -18,22 +15,15 @@ fn is_mt() -> bool {
     unsafe { libc::syscall(libc::SYS_gettid) == (libc::getpid().into()) }
 }
 
-
 /// actual impl for `x86`
-#[cfg(all(
-    target_env = "gnu",
-    target_arch = "x86"
-))]
+#[cfg(all(target_env = "gnu", target_arch = "x86"))]
 #[inline]
 fn is_mt() -> bool {
     unsafe { libc::syscall(libc::SYS_gettid) == (libc::getpid()) }
 }
 
 /// actual impl for all other targets
-#[cfg(not(all(
-    target_env = "gnu",
-    any(target_arch = "x86_64", target_arch = "x86")
-)))]
+#[cfg(not(all(target_env = "gnu", any(target_arch = "x86_64", target_arch = "x86"))))]
 #[inline]
 fn is_mt() -> bool {
     unsafe { libc::gettid() == libc::getpid() }
